@@ -1,0 +1,1717 @@
+//ch8
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GatherGO - Creating Unforgettable Events</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        /* Header Styles */
+header {
+    background-color: white;
+    padding: 1rem;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+}
+
+.logo-container img {
+    width: 80px;
+    height: 80px;
+    margin-right: 1rem;
+}
+
+.text-container h1 {
+    font-family: 'Cursive Font', cursive; /* Replace with your preferred cursive font */
+    color: #ff69b4; /* Pink color for the logo text */
+}
+
+.text-container p {
+    font-size: 0.8rem;
+    color: #888;
+}
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+        #searchBox {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100">
+    <!-- Navbar -->
+    <nav id="navbar" class="flex items-center p-4 bg-white shadow-md">
+        <!-- Back Button (Just the arrow) -->
+        <button id="backButton" class="hidden text-pink-600 hover:text-pink-800" onclick="goBack()">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+
+        <!-- GatherGO Name -->
+        <span class="text-pink-600 font-bold text-xl mr-4">GatherGO</span>
+
+        <!-- Spacer to push all sections to the right -->
+        <div class="flex-grow"></div>
+
+        <!-- Navigation Links -->
+        <div class="flex space-x-6 items-center">
+            <a href="#" onclick="loadPage('home')" class="nav-link flex items-center flex-shrink-0 px-5 py-2 border-b-4 border-transparent text-pink-600 hover:border-pink-600">HOME</a>
+        <a href="#" onclick="loadPage('about')" class="nav-link flex items-center flex-shrink-0 px-5 py-2 border-b-4 border-transparent text-pink-600 hover:border-pink-600">ABOUT</a>
+        <a href="#" onclick="loadPage('services')" class="nav-link flex items-center flex-shrink-0 px-5 py-2 border-b-4 border-transparent text-pink-600 hover:border-pink-600">SERVICES</a>
+        <a href="#" onclick="loadPage('gallery')" class="nav-link flex items-center flex-shrink-0 px-5 py-2 border-b-4 border-transparent text-pink-600 hover:border-pink-600">GALLERY</a>
+        <a href="#" onclick="loadPage('contact')" class="nav-link flex items-center flex-shrink-0 px-5 py-2 border-b-4 border-transparent text-pink-600 hover:border-pink-600">CONTACT</a>
+
+        <!-- Search Icon and Search Box -->
+        <div class="flex items-center space-x-4 ml-6">
+            <button onclick="toggleSearchBox()" class="text-pink-600 hover:text-pink-800">
+                <i class="fas fa-search"></i>
+            </button>
+            <div id="searchBox" class="hidden">
+                <input type="text" id="searchInput" placeholder="Search..." class="border rounded-lg px-2 py-1">
+            </div>
+        </div>
+
+        <!-- Settings Icon -->
+        <button onclick="loadPage('settings')" class="text-pink-600 hover:text-pink-800 ml-4">
+            <i class="fas fa-cog"></i>
+        </button>
+    </nav>
+
+    <!-- Dynamic Content -->
+    <main id="content" class="mt-20 px-6"></main>
+
+    <!-- JavaScript for Page Navigation -->
+    <script>
+        let previousPage = 'login';
+        let historyStack = ['login']; // Stack to track navigation history
+
+        function loadPage(page, hotelName = '', option = '') {
+            console.log(`Loading page: ${page}`); // Debugging
+            let content = document.getElementById('content');
+            let navbar = document.getElementById('navbar');
+            let backButton = document.getElementById('backButton');
+
+            if (!content) {
+                console.error('Content element not found');
+                return;
+            }
+
+            // Hide navbar on login and signup pages
+            if (page === 'login' || page === 'signup') {
+                navbar.classList.add('hidden');
+            } else {
+                navbar.classList.remove('hidden');
+            }
+
+            // Show back button if not on home, login, or signup pages
+            if (page !== 'home' && page !== 'login' && page !== 'signup') {
+                backButton.classList.remove('hidden');
+            } else {
+                backButton.classList.add('hidden');
+            }
+
+            // Update history stack
+            if (page !== historyStack[historyStack.length - 1]) {
+                historyStack.push(page);
+            }
+
+            // Set page content based on the requested page
+            switch (page) {
+                case 'login':
+    content.innerHTML = `
+        <!-- Header Section -->
+        <header class="bg-white p-4 flex justify-between items-center">
+            <div class="logo-container">
+                <img src="https://bcassetcdn.com/social/dtagfrf820/preview.png" alt="Gathergo Logo" class="w-32 h-32">
+                <div class="text-container">
+                    <h1 class="text-2xl font-bold text-pink-600">GATHERGO</h1>
+                    <p class="text-sm text-gray-500">YOUR EVENT. YOUR WAY!</p>
+                </div>
+            </div>
+            <!-- Add any additional elements here if needed -->
+        </header>
+
+        <!-- Main Content Section -->
+        <section class="py-16 flex flex-col md:flex-row bg-gray-50">
+            <!-- Form Section -->
+            <div class="md:w-1/2 p-8 flex flex-col justify-center items-center">
+                <h2 class="text-4xl font-bold text-gray-900 mb-6 text-center">Welcome Back!</h2>
+                <form class="w-full max-w-md bg-white p-8 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl" onsubmit="handleLogin(event)">
+                    <div class="mb-5">
+                        <label class="block text-gray-700 font-medium mb-2">Email Address</label>
+                        <input type="email" id="email" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-pink-500 transition-colors" placeholder="Enter your email" required>
+                    </div>
+                    <div class="mb-5">
+                        <label class="block text-gray-700 font-medium mb-2">Password</label>
+                        <input type="password" id="password" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-pink-500 transition-colors" placeholder="Enter your password" required>
+                    </div>
+                    <button type="submit" class="w-full bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold py-3 rounded-lg hover:from-pink-600 hover:to-purple-600 transition-all duration-300">
+                        Login
+                    </button>
+                    <p class="mt-5 text-sm text-gray-600 text-center">Don't have an account? 
+                        <a href="#" onclick="loadPage('signup')" class="text-pink-600 font-medium hover:text-pink-800 transition-colors">Sign Up</a>
+                    </p>
+                </form>
+            </div>
+
+            <!-- Image Section -->
+            <div class="md:w-1/2 p-8 flex justify-center items-center">
+                <img src="https://images.unsplash.com/photo-1588702547923-7093a6c3ba33?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" alt="Login Illustration" class="w-full h-full object-cover rounded-lg shadow-lg">
+            </div>
+        </section>`;
+    break;
+
+case 'signup':
+    content.innerHTML = `
+        <!-- Header Section -->
+        <header class="bg-white p-4 flex justify-between items-center">
+            <div class="logo-container">
+                <img src="path/to/gathergo-logo.png" alt="Gathergo Logo" class="w-32 h-32">
+                <div class="text-container">
+                    <h1 class="text-2xl font-bold text-pink-600">GATHERGO</h1>
+                    <p class="text-sm text-gray-500">YOUR EVENT. YOUR WAY!</p>
+                </div>
+            </div>
+            <!-- Add any additional elements here if needed -->
+        </header>
+
+        <!-- Main Content Section -->
+        <section class="py-16 flex flex-col md:flex-row bg-gray-50">
+            <!-- Form Section -->
+            <div class="md:w-1/2 p-8 flex flex-col justify-center items-center">
+                <h2 class="text-4xl font-bold text-gray-900 mb-6 text-center">Create Your Account</h2>
+                <form class="w-full max-w-md bg-white p-8 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl" onsubmit="handleSignUp(event)">
+                    <div class="mb-5">
+                        <label class="block text-gray-700 font-medium mb-2">Full Name</label>
+                        <input type="text" id="fullName" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-pink-500 transition-colors" placeholder="Enter your full name" required>
+                    </div>
+                    <div class="mb-5">
+                        <label class="block text-gray-700 font-medium mb-2">Email Address</label>
+                        <input type="email" id="signupEmail" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-pink-500 transition-colors" placeholder="Enter your email" required>
+                    </div>
+                    <div class="mb-5">
+                        <label class="block text-gray-700 font-medium mb-2">Password</label>
+                        <input type="password" id="signupPassword" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-pink-500 transition-colors" placeholder="Enter your password" required>
+                    </div>
+                    <div class="mb-5">
+                        <label class="block text-gray-700 font-medium mb-2">Phone Number</label>
+                        <input type="tel" id="phoneNumber" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-pink-500 transition-colors" placeholder="Enter your phone number" required>
+                    </div>
+                    <button type="submit" class="w-full bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold py-3 rounded-lg hover:from-pink-600 hover:to-purple-600 transition-all duration-300">
+                        Sign Up
+                    </button>
+                    <p class="mt-5 text-sm text-gray-600 text-center">Already have an account? 
+                        <a href="#" onclick="loadPage('login')" class="text-pink-600 font-medium hover:text-pink-800 transition-colors">Login</a>
+                    </p>
+                </form>
+            </div>
+
+            <!-- Image Section -->
+            <div class="md:w-1/2 p-8 flex justify-center items-center">
+                <img src="https://images.unsplash.com/photo-1593642532401-c26b3efad204?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" alt="Sign Up Illustration" class="w-full h-full object-cover rounded-lg shadow-lg">
+            </div>
+        </section>`;
+    break;
+    case 'home':
+    content.innerHTML = `
+        <section class="relative overflow-hidden">
+            <!-- Hero Section -->
+            <div class="bg-cover bg-center h-screen relative" style="background-image: url('https://s-media-cache-ak0.pinimg.com/736x/8a/3b/ae/8a3bae60d2bca89fec2c14547a81ad58.jpg');">
+                <div class="absolute inset-0 bg-black opacity-50"></div>
+                <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex items-center justify-center h-full">
+                    <div class="text-center">
+                        <h1 class="text-6xl font-bold text-white mb-4">Welcome to GatherGO</h1>
+                        <p class="text-xl text-white max-w-2xl mx-auto mb-8">Transforming your special moments into unforgettable experiences.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Services Section -->
+            <section class="py-20 bg-gray-50">
+                <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                    <h2 class="text-4xl font-bold text-gray-800 text-center mb-12">Our Services</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <!-- Service 1 -->
+                        <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                            <div class="w-16 h-16 bg-blue-500 rounded-full mx-auto flex items-center justify-center mb-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                            </div>
+                            <h3 class="text-2xl font-semibold text-gray-800 mb-2">Event Planning</h3>
+                            <p class="text-gray-600">End-to-end planning for weddings, corporate events, and more.</p>
+                        </div>
+                        <!-- Service 2 -->
+                        <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                            <div class="w-16 h-16 bg-green-500 rounded-full mx-auto flex items-center justify-center mb-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                                </svg>
+                            </div>
+                            <h3 class="text-2xl font-semibold text-gray-800 mb-2">Venue Selection</h3>
+                            <p class="text-gray-600">Find the perfect venue tailored to your event's needs.</p>
+                        </div>
+                        <!-- Service 3 -->
+                        <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                            <div class="w-16 h-16 bg-red-500 rounded-full mx-auto flex items-center justify-center mb-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <h3 class="text-2xl font-semibold text-gray-800 mb-2">Logistics Management</h3>
+                            <p class="text-gray-600">Streamline logistics for seamless event execution.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- User Details Section -->
+            <section class="py-16 bg-gray-800 text-white">
+                <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                    <h2 class="text-3xl font-bold text-center mb-8">User Profile</h2>
+                    <div class="max-w-2xl mx-auto bg-gray-700 p-8 rounded-lg shadow-lg">
+                        <h3 class="text-2xl font-semibold mb-4">Personal Information</h3>
+                        <ul class="space-y-2">
+                            <li><strong>Name:</strong> CH.SAI KRISHNA</li>
+                            <li><strong>Email:</strong>SAIKRISHNA@example.com</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </section>
+    `;
+    break;
+                case 'about':
+                    content.innerHTML = `
+<!-- About Us Section -->
+<div class="relative flex flex-row max-w-screen-lg mx-auto p-6 bg-gray-900 text-gray-100 divide-x divide-gray-700">
+    <div class="flex-1 p-6 space-y-4">
+        <h3 class="text-3xl font-bold tracking-tight">About Us</h3>
+        <p class="text-sm text-gray-400 leading-relaxed">
+            GatherGO is a premier event management company based in India, specializing in weddings and grand celebrations. Our mission is to turn your dream events into reality by delivering seamless and unforgettable experiences. We take pride in our ability to transform ideas into well-executed events that leave lasting impressions.
+        </p>
+    </div>
+    <div class="flex-1 p-6 space-y-4">
+        <div class="cursor-pointer hover:text-teal-400 transition-colors" onclick="openDialog('services')">
+            <h3 class="text-2xl font-semibold">Our Services</h3>
+        </div>
+        <div class="cursor-pointer hover:text-teal-400 transition-colors" onclick="openDialog('team')">
+            <h3 class="text-2xl font-semibold">Professional Team</h3>
+        </div>
+        <div class="cursor-pointer hover:text-teal-400 transition-colors" onclick="openDialog('vision')">
+            <h3 class="text-2xl font-semibold">Vision</h3>
+        </div>
+    </div>
+</div>
+
+<!-- Add Margin Between "About Us" and "Our Team" -->
+<div class="my-12"></div> <!-- This adds vertical spacing -->
+
+<!-- Our Team Section -->
+<section class="container flex flex-col items-center justify-center p-4 mx-auto space-y-8 sm:p-10 bg-gray-900 text-gray-100">
+    <h1 class="text-4xl font-bold leading-none text-center sm:text-5xl">Our Team</h1>
+    <p class="max-w-2xl text-center text-gray-400">
+        Meet the talented individuals behind GatherGO. Our team is passionate about creating unforgettable experiences for our clients.
+    </p>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-6 max-w-4xl mx-auto">
+        <!-- Team Member 1 -->
+        <div class="p-6 shadow-lg rounded-lg bg-gray-800 text-center transform transition-transform hover:scale-105" data-aos="fade-up" data-aos-delay="200">
+            <img src="https://source.unsplash.com/random/200x200?portrait" alt="Rahul Sharma" class="w-32 h-32 rounded-full mx-auto object-cover border-4 border-teal-400">
+            <h4 class="text-xl font-semibold mt-4">Rahul Sharma</h4>
+            <p class="text-sm text-gray-400">Founder & CEO</p>
+            <p class="mt-2 text-gray-300 text-sm">With over 10 years of experience in event management, Rahul leads GatherGO with innovation and vision.</p>
+        </div>
+    <div class="p-6 shadow-lg rounded-lg bg-gray-800 text-center transform transition-transform hover:scale-105">
+            <img src="https://source.unsplash.com/random/200x200?woman" alt="Ananya Verma" class="w-32 h-32 rounded-full mx-auto object-cover border-4 border-teal-400">
+            <h4 class="text-xl font-semibold mt-4">Ananya Verma</h4>
+            <p class="text-sm text-gray-400">Creative Director</p>
+            <p class="mt-2 text-gray-300 text-sm">Ananya specializes in crafting unique themes and designs that leave a lasting impression on guests.</p>
+            <div class="flex justify-center space-x-4 mt-4">
+                <a href="#" class="text-teal-400 hover:text-teal-300 transition-colors">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+                <a href="#" class="text-teal-400 hover:text-teal-300 transition-colors">
+                    <i class="fab fa-instagram"></i>
+                </a>
+            </div>
+        </div>
+            <div class="p-6 shadow-lg rounded-lg bg-gray-800 text-center transform transition-transform hover:scale-105">
+            <img src="https://source.unsplash.com/random/200x200?man" alt="Vikram Patel" class="w-32 h-32 rounded-full mx-auto object-cover border-4 border-teal-400">
+            <h4 class="text-xl font-semibold mt-4">Vikram Patel</h4>
+            <p class="text-sm text-gray-400">Event Manager</p>
+            <p class="mt-2 text-gray-300 text-sm">Vikram ensures every event runs smoothly, from planning to execution, with meticulous attention to detail.</p>
+            <div class="flex justify-center space-x-4 mt-4">
+                <a href="#" class="text-teal-400 hover:text-teal-300 transition-colors">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+                <a href="#" class="text-teal-400 hover:text-teal-300 transition-colors">
+                    <i class="fab fa-instagram"></i>
+                </a>
+            </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="container max-w-4xl mx-auto mt-12 p-6 bg-gray-800 rounded-lg text-white">
+    <h2 class="text-3xl font-bold text-center mb-6">What Our Clients Say</h2>
+    <div id="testimonial-slider" class="relative overflow-hidden">
+        <div class="flex transition-transform duration-500 ease-in-out" id="testimonial-track">
+            <!-- Testimonial 1 -->
+            <div class="min-w-full p-6 flex flex-col items-center justify-center">
+                <img src="https://source.unsplash.com/random/200x200?wedding" alt="Priya & Arjun" class="w-24 h-24 rounded-full mx-auto object-cover border-4 border-teal-400">
+                <blockquote class="max-w-lg text-lg italic font-medium text-center mt-4">
+                    "GatherGO made our wedding day absolutely perfect! Their attention to detail and professionalism exceeded our expectations."
+                </blockquote>
+                <div class="text-center text-gray-400 mt-2">
+                    <p>Priya & Arjun</p>
+                </div>
+            </div>
+
+            <!-- Testimonial 2 -->
+            <div class="min-w-full p-6 flex flex-col items-center justify-center">
+                <img src="https://source.unsplash.com/random/200x200?corporate" alt="Rohan Malhotra" class="w-24 h-24 rounded-full mx-auto object-cover border-4 border-teal-400">
+                <blockquote class="max-w-lg text-lg italic font-medium text-center mt-4">
+                    "Their team planned our corporate event flawlessly. From decor to execution, everything was seamless!"
+                </blockquote>
+                <div class="text-center text-gray-400 mt-2">
+                    <p>Rohan Malhotra</p>
+                </div>
+            </div>
+
+            <!-- Testimonial 3 -->
+            <div class="min-w-full p-6 flex flex-col items-center justify-center">
+                <img src="https://source.unsplash.com/random/200x200?event" alt="Leroy Jenkins" class="w-24 h-24 rounded-full mx-auto object-cover border-4 border-teal-400">
+                <blockquote class="max-w-lg text-lg italic font-medium text-center mt-4">
+                    "GatherGO's creativity and dedication transformed our vision into reality. Highly recommend them!"
+                </blockquote>
+                <div class="text-center text-gray-400 mt-2">
+                    <p>Leroy Jenkins</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="flex justify-center space-x-4 mt-6">
+        <button onclick="prevTestimonial()" class="text-teal-400 hover:text-teal-300 transition-colors text-xl"><</button>
+        <button onclick="nextTestimonial()" class="text-teal-400 hover:text-teal-300 transition-colors text-xl">></button>
+    </div>
+                        </section>`;
+                    break;
+                    case 'services':
+    content.innerHTML = `
+        <section class="py-20 bg-gray-50">
+            <div class="container mx-auto px-4">
+                <!-- Section Title -->
+                <h2 class="text-4xl font-bold text-center text-gray-800 mb-12">Our Services</h2>
+
+                <!-- Service Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Service Card 1 -->
+                    <div class="relative p-6 bg-white rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer"
+                         onclick="loadPage('marriageHotels')">
+                        <div class="absolute top-4 right-4 w-12 h-12 bg-pink-600 rounded-full flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10a9 9 0 1118 0 9 9 0 01-18 0z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-pink-600 mt-8">Marriage Hotel Bookings</h3>
+                        <p class="mt-2 text-gray-600">We secure the best venues for weddings.</p>
+                    </div>
+
+                    <!-- Service Card 2 -->
+                    <div class="relative p-6 bg-white rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer"
+                         onclick="loadPage('partyHotels')">
+                        <div class="absolute top-4 right-4 w-12 h-12 bg-pink-600 rounded-full flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-pink-600 mt-8">Party Planning</h3>
+                        <p class="mt-2 text-gray-600">We organize memorable parties for all occasions.</p>
+                    </div>
+
+                    <!-- Service Card 3 -->
+                    <div class="relative p-6 bg-white rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer"
+                         onclick="loadPage('corporateHotels')">
+                        <div class="absolute top-4 right-4 w-12 h-12 bg-pink-600 rounded-full flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-pink-600 mt-8">Corporate Events</h3>
+                        <p class="mt-2 text-gray-600">Professional event management for corporate gatherings.</p>
+                    </div>
+
+                    <!-- Add More Cards Here -->
+                    <div class="relative p-6 bg-white rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer"
+                         onclick="loadPage('birthdayHotels')">
+                        <div class="absolute top-4 right-4 w-12 h-12 bg-pink-600 rounded-full flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4m16 0H7m14 0l-2-2m2 2l2-2" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-pink-600 mt-8">Birthday Celebrations</h3>
+                        <p class="mt-2 text-gray-600">Making birthdays special with unique themes and activities.</p>
+                    </div>
+
+                    <div class="relative p-6 bg-white rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer"
+                         onclick="loadPage('weddingPlanning')">
+                        <div class="absolute top-4 right-4 w-12 h-12 bg-pink-600 rounded-full flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4m14-4v4M5 17v4m14-4v4M3 10h18M3 21h18" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-pink-600 mt-8">Wedding Planning</h3>
+                        <p class="mt-2 text-gray-600">Comprehensive wedding planning services to make your special day unforgettable.</p>
+                    </div>
+
+                    <div class="relative p-6 bg-white rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer"
+                         onclick="loadPage('eventDecor')">
+                        <div class="absolute top-4 right-4 w-12 h-12 bg-pink-600 rounded-full flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-pink-600 mt-8">Event Decor</h3>
+                        <p class="mt-2 text-gray-600">Customized event decor to match your theme and style.</p>
+                    </div>
+
+                    <div class="relative p-6 bg-white rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer"
+                         onclick="loadPage('cateringServices')">
+                        <div class="absolute top-4 right-4 w-12 h-12 bg-pink-600 rounded-full flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-pink-600 mt-8">Catering Services</h3>
+                        <p class="mt-2 text-gray-600">Delicious and varied catering options to suit your event needs.</p>
+                    </div>
+
+                    <div class="relative p-6 bg-white rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer"
+                         onclick="loadPage('photographyServices')">
+                        <div class="absolute top-4 right-4 w-12 h-12 bg-pink-600 rounded-full flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-pink-600 mt-8">Photography Services</h3>
+                        <p class="mt-2 text-gray-600">Professional photography services to capture your special moments.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    `;
+    break;
+                case 'cateringServices':
+                    content.innerHTML = `
+                        <section class="py-20">
+                            <h2 class="text-4xl font-bold text-center text-gray-800">Catering Services</h2>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                                <div class="p-6 bg-white rounded-lg shadow-md" onclick="loadPage('cateringOptions', '', 'buffet')">
+                                    <h3 class="text-xl font-bold text-pink-600">Buffet System</h3>
+                                    <p class="mt-2 text-gray-600">Enjoy a wide variety of dishes with our buffet system.</p>
+                                </div>
+                                <div class="p-6 bg-white rounded-lg shadow-md" onclick="loadPage('cateringOptions', '', 'tableDining')">
+                                    <h3 class="text-xl font-bold text-pink-600">Table Dining</h3>
+                                    <p class="mt-2 text-gray-600">Experience fine dining with our table service.</p>
+                                </div>
+                            </div>
+                        </section>`;
+                    break;
+                case 'cateringOptions':
+                    content.innerHTML = `
+                        <section class="py-20">
+                            <h2 class="text-4xl font-bold text-center text-gray-800">${option === 'buffet' ? 'Buffet System' : 'Table Dining'}</h2>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                                <div class="p-6 bg-white rounded-lg shadow-md" onclick="loadPage('foodCategories', '', '${option}-veg')">
+                                    <h3 class="text-xl font-bold text-pink-600">Veg</h3>
+                                    <p class="mt-2 text-gray-600">Explore our delicious vegetarian options.</p>
+                                </div>
+                                <div class="p-6 bg-white rounded-lg shadow-md" onclick="loadPage('foodCategories', '', '${option}-nonVeg')">
+                                    <h3 class="text-xl font-bold text-pink-600">Non-Veg</h3>
+                                    <p class="mt-2 text-gray-600">Explore our mouth-watering non-vegetarian options.</p>
+                                </div>
+                            </div>
+                        </section>`;
+                    break;
+                case 'foodCategories':
+                    content.innerHTML = `
+                        <section class="py-20">
+                            <h2 class="text-4xl font-bold text-center text-gray-800">${option.includes('veg') ? 'Veg Options' : 'Non-Veg Options'}</h2>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
+                                <div class="p-6 bg-white rounded-lg shadow-md" onclick="loadPage('foodItems', '', '${option}-tiffins')">
+                                    <h3 class="text-xl font-bold text-pink-600">Tiffins</h3>
+                                    <p class="mt-2 text-gray-600">Start your day with our delicious tiffins.</p>
+                                </div>
+                                <div class="p-6 bg-white rounded-lg shadow-md" onclick="loadPage('foodItems', '', '${option}-lunch')">
+                                    <h3 class="text-xl font-bold text-pink-600">Lunch</h3>
+                                    <p class="mt-2 text-gray-600">Enjoy a hearty lunch with our special dishes.</p>
+                                </div>
+                                <div class="p-6 bg-white rounded-lg shadow-md" onclick="loadPage('foodItems', '', '${option}-snacks')">
+                                    <h3 class="text-xl font-bold text-pink-600">Snacks</h3>
+                                    <p class="mt-2 text-gray-600">Savor our tasty snacks any time of the day.</p>
+                                </div>
+                                <div class="p-6 bg-white rounded-lg shadow-md" onclick="loadPage('foodItems', '', '${option}-dinner')">
+                                    <h3 class="text-xl font-bold text-pink-600">Dinner</h3>
+                                    <p class="mt-2 text-gray-600">End your day with a delightful dinner.</p>
+                                </div>
+                            </div>
+                        </section>`;
+                    break;
+                case 'foodItems':
+                    const foodItems = option.includes('veg') ? 
+                        {
+                            'tiffins': ['Idli', 'Dosa', 'Vada', 'Upma'],
+                            'lunch': ['Sambar Rice', 'Vegetable Biryani', 'Curd Rice', 'Rasam'],
+                            'snacks': ['Murukku', 'Paniyaram', 'Sundal', 'Pongal'],
+                            'dinner': ['Vegetable Kurma', 'Chapati', 'Pulao', 'Paneer Butter Masala']
+                        } : 
+                        {
+                            'tiffins': ['Chicken Curry', 'Fish Fry', 'Mutton Biryani', 'Egg Dosa'],
+                            'lunch': ['Chicken Biryani', 'Fish Curry', 'Mutton Curry', 'Prawn Masala'],
+                            'snacks': ['Chicken Pakora', 'Fish Amritsari', 'Mutton Seekh Kebab', 'Egg Rolls'],
+                            'dinner': ['Chicken Chettinad', 'Fish Curry', 'Mutton Rogan Josh', 'Prawn Curry']
+                        };
+
+                    content.innerHTML = `
+                        <section class="py-20">
+                            <h2 class="text-4xl font-bold text-center text-gray-800">${option}</h2>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
+                                ${foodItems[option.split('-')[2]].map(item => `
+                                    <div class="p-6 bg-white rounded-lg shadow-md">
+                                        <h3 class="text-xl font-bold text-pink-600">${item}</h3>
+                                        <p class="mt-2 text-gray-600">Delicious ${item} served hot!</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </section>`;
+                    break;
+                    case 'contact':
+    content.innerHTML = `
+        <section class="py-16 bg-gray-50">
+            <!-- Section Header -->
+            <div class="container mx-auto text-center">
+                <h2 class="text-4xl font-bold text-gray-800">Contact Us</h2>
+                <p class="mt-4 text-lg text-gray-600">We're here to help! Reach out to us for any inquiries or assistance.</p>
+            </div>
+
+            <!-- Contact Form and Details -->
+            <div class="container mx-auto mt-12 flex flex-col md:flex-row gap-8">
+                <!-- Contact Form -->
+                <div class="w-full md:w-1/2 bg-white p-8 rounded-lg shadow-lg">
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-6">Send Us a Message</h3>
+                    <form id="contactForm" onsubmit="handleContact(event)" novalidate>
+                        <!-- Full Name -->
+                        <div class="mb-5">
+                            <label for="fullName" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                            <input 
+                                type="text" 
+                                id="fullName" 
+                                name="fullName" 
+                                placeholder="Enter your full name" 
+                                class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-600" 
+                                required 
+                                aria-label="Full Name"
+                            >
+                        </div>
+
+                        <!-- Phone Number -->
+                        <div class="mb-5">
+                            <label for="phoneNumber" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                            <input 
+                                type="tel" 
+                                id="phoneNumber" 
+                                name="phoneNumber" 
+                                placeholder="Enter your phone number" 
+                                class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-600" 
+                                required 
+                                aria-label="Phone Number"
+                            >
+                        </div>
+
+                        <!-- Email Address -->
+                        <div class="mb-5">
+                            <label for="emailAddress" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                            <input 
+                                type="email" 
+                                id="emailAddress" 
+                                name="emailAddress" 
+                                placeholder="Enter your email address" 
+                                class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-600" 
+                                required 
+                                aria-label="Email Address"
+                            >
+                        </div>
+
+                        <!-- Message -->
+                        <div class="mb-5">
+                            <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                            <textarea 
+                                id="message" 
+                                name="message" 
+                                rows="4" 
+                                placeholder="Write your message here..." 
+                                class="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-600" 
+                                required 
+                                aria-label="Message"
+                            ></textarea>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button 
+                            type="submit" 
+                            class="w-full bg-pink-600 text-white py-3 px-6 rounded-md hover:bg-pink-700 transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-600"
+                        >
+                            Send Message
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Contact Information -->
+                <div class="w-full md:w-1/2 bg-white p-8 rounded-lg shadow-lg">
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-6">Get in Touch</h3>
+                    <p class="text-gray-600 mb-6">Have questions about our services? Want to discuss your event details? Feel free to reach out to us!</p>
+
+                    <!-- Contact Details -->
+                    <div class="space-y-4">
+                        <p class="flex items-center text-gray-700">
+                            <i class="fas fa-map-marker-alt mr-2 text-pink-600"></i>
+                            123, Event Plaza, India
+                        </p>
+                        <p class="flex items-center text-gray-700">
+                            <i class="fas fa-phone mr-2 text-pink-600"></i>
+                            +91 999 673 984
+                        </p>
+                        <p class="flex items-center text-gray-700">
+                            <i class="fas fa-envelope mr-2 text-pink-600"></i>
+                            support@gathergo.com
+                        </p>
+                    </div>
+
+                    <!-- Working Hours -->
+                    <div class="mt-8">
+                        <h4 class="text-lg font-semibold text-gray-800 mb-4">Working Hours</h4>
+                        <ul class="space-y-2 text-gray-600">
+                            <li>Monday - Friday: 9:00 AM - 6:00 PM</li>
+                            <li>Saturday: 10:00 AM - 4:00 PM</li>
+                            <li>Sunday: Closed</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    `;
+    break;
+                case 'marriageHotels':
+                    content.innerHTML = generateHotelsList('Marriage Venues', [
+                        { name: 'Royal Palace Hotel', location: 'Mumbai', price: '₹1,50,000 onwards', capacity: '500-1000 guests' },
+                        { name: 'Green Valley Resort', location: 'Delhi', price: '₹1,20,000 onwards', capacity: '300-700 guests' },
+                        { name: 'Lakeside Manor', location: 'Bangalore', price: '₹1,80,000 onwards', capacity: '400-800 guests' },
+                        { name: 'Heritage Grand', location: 'Jaipur', price: '₹1,40,000 onwards', capacity: '200-600 guests' }
+                    ]);
+                    break;
+                case 'partyHotels':
+                    content.innerHTML = generateHotelsList('Party Venues', [
+                        { name: 'Sky Lounge', location: 'Mumbai', price: '₹80,000 onwards', capacity: '100-300 guests' },
+                        { name: 'Urban Club', location: 'Delhi', price: '₹70,000 onwards', capacity: '80-250 guests' },
+                        { name: 'Terrace Garden', location: 'Bangalore', price: '₹90,000 onwards', capacity: '150-400 guests' },
+                        { name: 'Blue Waters Resort', location: 'Goa', price: '₹1,00,000 onwards', capacity: '100-350 guests' }
+                    ]);
+                    break;
+                case 'corporateHotels':
+                    content.innerHTML = generateHotelsList('Corporate Event Venues', [
+                        { name: 'Business Center', location: 'Mumbai', price: '₹60,000 onwards', capacity: '50-200 guests' },
+                        { name: 'Conference Plaza', location: 'Delhi', price: '₹70,000 onwards', capacity: '100-300 guests' },
+                        { name: 'Tech Park Convention', location: 'Bangalore', price: '₹80,000 onwards', capacity: '150-400 guests' },
+                        { name: 'Executive Suites', location: 'Hyderabad', price: '₹65,000 onwards', capacity: '80-250 guests' }
+                    ]);
+                    break;
+                case 'birthdayHotels':
+                    content.innerHTML = generateHotelsList('Birthday Celebration Venues', [
+                        { name: 'Celebration Corner', location: 'Mumbai', price: '₹40,000 onwards', capacity: '50-150 guests' },
+                        { name: 'Fun Zone', location: 'Delhi', price: '₹35,000 onwards', capacity: '30-100 guests' },
+                        { name: 'Party Paradise', location: 'Bangalore', price: '₹45,000 onwards', capacity: '40-120 guests' },
+                        { name: 'Carnival Hall', location: 'Chennai', price: '₹38,000 onwards', capacity: '50-130 guests' }
+                    ]);
+                    break;
+                case 'weddingPlanning':
+                    content.innerHTML = `
+                        <section class="py-20">
+                            <h2 class="text-4xl font-bold text-center text-gray-800">Wedding Planning Services</h2>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                                <div class="p-6 bg-white rounded-lg shadow-md">
+                                    <h3 class="text-xl font-bold text-pink-600">Full Service Planning</h3>
+                                    <p class="mt-2 text-gray-600">Comprehensive wedding planning from start to finish.</p>
+                                    <ul class="list-disc ml-5 mt-2 text-gray-600">
+                                        <li>Venue selection and booking</li>
+                                        <li>Theme development and decor design</li>
+                                        <li>Vendor coordination and management</li>
+                                        <li>Timeline creation and execution</li>
+                                        <li>On-site coordination on wedding day</li>
+                                    </ul>
+                                    <p class="mt-2 text-gray-800 font-semibold">Starting at ₹2,50,000</p>
+                                </div>
+                                <div class="p-6 bg-white rounded-lg shadow-md">
+                                    <h3 class="text-xl font-bold text-pink-600">Partial Planning</h3>
+                                    <p class="mt-2 text-gray-600">Perfect for couples who need guidance with specific aspects.</p>
+                                    <ul class="list-disc ml-5 mt-2 text-gray-600">
+                                        <li>Vendor recommendations</li>
+                                        <li>Event design consultation</li>
+                                        <li>Timeline creation</li>
+                                        <li>Month-of coordination</li>
+                                    </ul>
+                                    <p class="mt-2 text-gray-800 font-semibold">Starting at ₹1,50,000</p>
+                                </div>
+                                <div class="p-6 bg-white rounded-lg shadow-md">
+                                    <h3 class="text-xl font-bold text-pink-600">Day-of Coordination</h3>
+                                    <p class="mt-2 text-gray-600">For couples who have planned everything but need professional execution.</p>
+                                    <ul class="list-disc ml-5 mt-2 text-gray-600">
+                                        <li>Final vendor confirmations</li>
+                                        <li>Wedding rehearsal coordination</li>
+                                        <li>On-site management and timeline execution</li>
+                                        <li>Handling any last-minute emergencies</li>
+                                    </ul>
+                                    <p class="mt-2 text-gray-800 font-semibold">Starting at ₹75,000</p>
+                                </div>
+                                <div class="p-6 bg-white rounded-lg shadow-md">
+                                    <h3 class="text-xl font-bold text-pink-600">Destination Wedding Planning</h3>
+                                    <p class="mt-2 text-gray-600">Specialized planning for weddings outside your hometown.</p>
+                                    <ul class="list-disc ml-5 mt-2 text-gray-600">
+                                        <li>Location scouting and venue selection</li>
+                                        <li>Travel and accommodation arrangements</li>
+                                        <li>Local vendor coordination</li>
+                                        <li>Guest experience management</li>
+                                    </ul>
+                                    <p class="mt-2 text-gray-800 font-semibold">Starting at ₹3,50,000</p>
+                                </div>
+                            </div>
+                            <div class="text-center mt-8">
+                                <a href="#" onclick="loadPage('contact')" class="bg-pink-600 text-white px-6 py-3 rounded-lg hover:bg-pink-700">Contact Us for Consultation</a>
+                            </div>
+                        </section>`;
+                    break;
+                case 'eventDecor':
+                    content.innerHTML = `
+                        <section class="py-20">
+                            <h2 class="text-4xl font-bold text-center text-gray-800">Event Decor Services</h2>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                                <div class="p-6 bg-white rounded-lg shadow-md">
+                                    <h3 class="text-xl font-bold text-pink-600">Traditional Decor</h3>
+                                    <p class="mt-2 text-gray-600">Classic and elegant decorations for cultural celebrations.</p>
+                                    <ul class="list-disc ml-5 mt-2 text-gray-600">
+                                        <li>Traditional floral arrangements</li>
+                                        <li>Cultural-specific decorative elements</li>
+                                        <li>Mandap and stage setup</li>
+                                        <li>Ceremonial props and accessories</li>
+                                    </ul>
+                                    <p class="mt-2 text-gray-800 font-semibold">Starting at ₹80,000</p>
+                                </div>
+                                <div class="p-6 bg-white rounded-lg shadow-md">
+                                    <h3 class="text-xl font-bold text-pink-600">Contemporary Decor</h3>
+                                    <p class="mt-2 text-gray-600">Modern and minimalist designs for sleek events.</p>
+                                    <ul class="list-disc ml-5 mt-2 text-gray-600">
+                                        <li>Geometric installations</li>
+                                        <li>Modern floral designs</li>
+                                        <li>Accent lighting and LED elements</li>
+                                        <li>Contemporary table settings</li>
+                                    </ul>
+                                    <p class="mt-2 text-gray-800 font-semibold">Starting at ₹1,00,000</p>
+                                </div>
+                                <div class="p-6 bg-white rounded-lg shadow-md">
+                                    <h3 class="text-xl font-bold text-pink-600">Themed Decor</h3>
+                                    <p class="mt-2 text-gray-600">Custom themes to make your event unique.</p>
+                                    <ul class="list-disc ml-5 mt-2 text-gray-600">
+                                        <li>Thematic prop design and creation</li>
+                                        <li>Immersive environment setup</li>
+                                        <li>Custom backdrops and photo zones</li>
+                                        <li>Themed table and venue decorations</li>
+                                    </ul>
+                                    <p class="mt-2 text-gray-800 font-semibold">Starting at ₹1,20,000</p>
+                                </div>
+                                <div class="p-6 bg-white rounded-lg shadow-md">
+                                    <h3 class="text-xl font-bold text-pink-600">Luxury Decor</h3>
+                                    <p class="mt-2 text-gray-600">Premium decorations for high-end events.</p>
+                                    <ul class="list-disc ml-5 mt-2 text-gray-600">
+                                        <li>Premium floral arrangements</li>
+                                        <li>Crystal and chandelier installations</li>
+                                        <li>Designer furniture and props</li>
+                                        <li>Custom lighting and visual effects</li>
+                                    </ul>
+                                    <p class="mt-2 text-gray-800 font-semibold">Starting at ₹2,50,000</p>
+                                </div>
+                            </div>
+                            <div class="text-center mt-8">
+                                <a href="#" onclick="loadPage('gallery')" class="bg-pink-600 text-white px-6 py-3 rounded-lg hover:bg-pink-700">View Our Gallery</a>
+                            </div>
+                        </section>`;
+                    break;
+                case 'photographyServices':
+                    content.innerHTML = `
+                        <section class="py-20">
+                            <h2 class="text-4xl font-bold text-center text-gray-800">Photography Services</h2>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                                <div class="p-6 bg-white rounded-lg shadow-md">
+                                    <h3 class="text-xl font-bold text-pink-600">Wedding Photography</h3>
+                                    <p class="mt-2 text-gray-600">Capturing your special day with elegance and emotion.</p>
+                                    <ul class="list-disc ml-5 mt-2 text-gray-600">
+                                        <li>Pre-wedding photoshoot</li>
+                                        <li>Ceremony coverage</li>
+                                        <li>Reception highlights</li>
+                                        <li>Edited high-resolution images</li>
+                                        <li>Custom wedding album</li>
+                                    </ul>
+                                    <p class="mt-2 text-gray-800 font-semibold">Starting at ₹75,000</p>
+                                </div>
+                                <div class="p-6 bg-white rounded-lg shadow-md">
+                                    <h3 class="text-xl font-bold text-pink-600">Event Photography</h3>
+                                    <p class="mt-2 text-gray-600">Professional coverage for parties and special occasions.</p>
+                                    <ul class="list-disc ml-5 mt-2 text-gray-600">
+                                        <li>Event highlights</li>
+                                        <li>Candid shots</li>
+                                        <li>Group photographs</li>
+                                        <li>Digital delivery of edited images</li>
+                                    </ul>
+                                    <p class="mt-2 text-gray-800 font-semibold">Starting at ₹40,000</p>
+                                </div>
+                                <div class="p-6 bg-white rounded-lg shadow-md">
+                                    <h3 class="text-xl font-bold text-pink-600">Corporate Photography</h3>
+                                    <p class="mt-2 text-gray-600">Professional images for business events and conferences.</p>
+                                    <ul class="list-disc ml-5 mt-2 text-gray-600">
+                                        <li>Speaker and presentation coverage</li>
+                                        <li>Networking moments</li>
+                                        <li>Corporate portraits</li>
+                                        <li>Same-day delivery available</li>
+                                    </ul>
+                                    <p class="mt-2 text-gray-800 font-semibold">Starting at ₹35,000</p>
+                                </div>
+                                <div class="p-6 bg-white rounded-lg shadow-md">
+                                    <h3 class="text-xl font-bold text-pink-600">Videography</h3>
+                                    <p class="mt-2 text-gray-600">Cinematic coverage of your special events.</p>
+                                    <ul class="list-disc ml-5 mt-2 text-gray-600">
+                                        <li>Full event coverage</li>
+                                        <li>Highlight reel</li>
+                                        <li>Professionally edited footage</li>
+                                        <li>Drone shots available</li>
+                                    </ul>
+                                    <p class="mt-2 text-gray-800 font-semibold">Starting at ₹90,000</p>
+                                </div>
+                            </div>
+                            <div class="text-center mt-8">
+                                <a href="#" onclick="loadPage('contact')" class="bg-pink-600 text-white px-6 py-3 rounded-lg hover:bg-pink-700">Book a Photographer</a>
+                            </div>
+                        </section>`;
+                    break;
+                case 'hotelDetails':
+                    content.innerHTML = `
+                        <section class="py-20">
+                            <h2 class="text-4xl font-bold text-center text-gray-800">${hotelName}</h2>
+                            <div class="mt-6 bg-white p-6 rounded-lg shadow-md">
+                                <div class="flex flex-col md:flex-row gap-6">
+                                    <div class="w-full md:w-1/2">
+                                        <img src="https://via.placeholder.com/600x400" alt="${hotelName}" class="w-full h-64 object-cover rounded">
+                                        <div class="grid grid-cols-3 gap-2 mt-2">
+                                            <img src="https://via.placeholder.com/200x150" alt="Gallery 1" class="w-full h-20 object-cover rounded">
+                                            <img src="https://via.placeholder.com/200x150" alt="Gallery 2" class="w-full h-20 object-cover rounded">
+                                            <img src="https://via.placeholder.com/200x150" alt="Gallery 3" class="w-full h-20 object-cover rounded">
+                                        </div>
+                                    </div>
+                                    <div class="w-full md:w-1/2">
+                                        <h3 class="text-2xl font-bold text-pink-600">About ${hotelName}</h3>
+                                        <p class="mt-2 text-gray-600">
+                                            ${getHotelDescription(hotelName)}
+                                        </p>
+                                        <div class="mt-4">
+                                            <p class="font-semibold">Location: <span class="font-normal">${getHotelLocation(hotelName)}</span></p>
+                                            <p class="font-semibold">Capacity: <span class="font-normal">${getHotelCapacity(hotelName)}</span></p>
+                                            <p class="font-semibold">Price Range: <span class="font-normal">${getHotelPrice(hotelName)}</span></p>
+                                        </div>
+                                        <div class="mt-4">
+                                            <h4 class="text-lg font-semibold">Amenities:</h4>
+                                            <ul class="list-disc ml-5 mt-2 text-gray-600">
+                                                ${getHotelAmenities(hotelName).map(amenity => `<li>${amenity}</li>`).join('')}
+                                            </ul>
+                                        </div>
+                                        <div class="mt-6">
+                                            <button class="bg-pink-600 text-white px-6 py-2 rounded-lg hover:bg-pink-700" onclick="loadPage('bookingForm', '${hotelName}')">Book Now</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>`;
+                    break;
+                case 'bookingForm':
+                    content.innerHTML = `
+                        <section class="py-20">
+                            <h2 class="text-4xl font-bold text-center text-gray-800">Book ${hotelName}</h2>
+                            <div class="max-w-2xl mx-auto mt-6 bg-white p-6 rounded-lg shadow-md">
+                                <form onsubmit="handleBooking(event, '${hotelName}')">
+                                    <div class="mb-4">
+                                        <label class="block text-gray-700 font-bold mb-2" for="bookingName">Full Name</label>
+                                        <input class="w-full px-3 py-2 border rounded" id="bookingName" type="text" placeholder="Your Name" required>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="block text-gray-700 font-bold mb-2" for="bookingEmail">Email Address</label>
+                                        <input class="w-full px-3 py-2 border rounded" id="bookingEmail" type="email" placeholder="Your Email" required>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="block text-gray-700 font-bold mb-2" for="bookingPhone">Phone Number</label>
+                                        <input class="w-full px-3 py-2 border rounded" id="bookingPhone" type="tel" placeholder="Your Phone" required>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="block text-gray-700 font-bold mb-2" for="eventType">Event Type</label>
+                                        <select class="w-full px-3 py-2 border rounded" id="eventType" required>
+                                            <option value="">Select Event Type</option>
+                                            <option value="wedding">Wedding</option>
+                                            <option value="corporate">Corporate Event</option>
+                                            <option value="birthday">Birthday</option>
+                                            <option value="party">Party</option>
+                                            <option value="other">Other</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="block text-gray-700 font-bold mb-2" for="eventDate">Event Date</label>
+                                        <input class="w-full px-3 py-2 border rounded" id="eventDate" type="date" required>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="block text-gray-700 font-bold mb-2" for="guestCount">Number of Guests</label>
+                                        <input class="w-full px-3 py-2 border rounded" id="guestCount" type="number" placeholder="Expected number of guests" required>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="block text-gray-700 font-bold mb-2" for="additionalServices">Additional Services (Optional)</label>
+                                        <div class="mt-2">
+                                            <label class="inline-flex items-center">
+                                                <input type="checkbox" class="form-checkbox" name="additionalServices" value="catering">
+                                                <span class="ml-2">Catering</span>
+                                            </label>
+                                            <label class="inline-flex items-center ml-6">
+                                                <input type="checkbox" class="form-checkbox" name="additionalServices" value="decoration">
+                                                <span class="ml-2">Decoration</span>
+                                            </label>
+                                            <label class="inline-flex items-center ml-6">
+                                                <input type="checkbox" class="form-checkbox" name="additionalServices" value="photography">
+                                                <span class="ml-2">Photography</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="block text-gray-700 font-bold mb-2" for="additionalNotes">Additional Notes</label>
+                                        <textarea class="w-full px-3 py-2 border rounded" id="additionalNotes" rows="3" placeholder="Any special requirements or questions"></textarea>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <button type="button" class="bg-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-400" onclick="loadPage('hotelDetails', '${hotelName}')">Back</button>
+                                        <button type="submit" class="bg-pink-600 text-white px-6 py-2 rounded-lg hover:bg-pink-700">Submit Booking</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </section>`;
+                    break;
+                    case 'gallery':
+    content.innerHTML = `
+        <section class="py-20 bg-gray-50">
+            <h2 class="text-4xl font-bold text-center text-gray-800 mb-10">Gallery</h2>
+            <div class="container mx-auto px-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    <!-- Card 1 -->
+                    <div class="group relative overflow-hidden rounded-lg shadow-lg transition-transform duration-300 hover:scale-105">
+                        <img src="https://via.placeholder.com/300x200" alt="Wedding Planning" class="w-full h-64 object-cover transform transition-transform duration-500 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-black opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
+                        <div class="p-6 absolute bottom-0 left-0 right-0 bg-white bg-opacity-90 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                            <h3 class="text-xl font-bold text-pink-600">Wedding Planning</h3>
+                            <p class="mt-2 text-gray-600">Capturing your special day with elegance and emotion.</p>
+                        </div>
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div class="group relative overflow-hidden rounded-lg shadow-lg transition-transform duration-300 hover:scale-105">
+                        <img src="https://via.placeholder.com/300x200" alt="Corporate Events" class="w-full h-64 object-cover transform transition-transform duration-500 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-black opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
+                        <div class="p-6 absolute bottom-0 left-0 right-0 bg-white bg-opacity-90 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                            <h3 class="text-xl font-bold text-pink-600">Corporate Events</h3>
+                            <p class="mt-2 text-gray-600">Professional event management for corporate gatherings.</p>
+                        </div>
+                    </div>
+
+                    <!-- Card 3 -->
+                    <div class="group relative overflow-hidden rounded-lg shadow-lg transition-transform duration-300 hover:scale-105">
+                        <img src="https://via.placeholder.com/300x200" alt="Birthday Celebrations" class="w-full h-64 object-cover transform transition-transform duration-500 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-black opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
+                        <div class="p-6 absolute bottom-0 left-0 right-0 bg-white bg-opacity-90 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                            <h3 class="text-xl font-bold text-pink-600">Birthday Celebrations</h3>
+                            <p class="mt-2 text-gray-600">Making birthdays special with unique themes and activities.</p>
+                        </div>
+                    </div>
+
+                    <!-- Card 4 -->
+                    <div class="group relative overflow-hidden rounded-lg shadow-lg transition-transform duration-300 hover:scale-105">
+                        <img src="https://via.placeholder.com/300x200" alt="Catering Services" class="w-full h-64 object-cover transform transition-transform duration-500 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-black opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
+                        <div class="p-6 absolute bottom-0 left-0 right-0 bg-white bg-opacity-90 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                            <h3 class="text-xl font-bold text-pink-600">Catering Services</h3>
+                            <p class="mt-2 text-gray-600">Delicious and varied catering options to suit your event needs.</p>
+                        </div>
+                    </div>
+
+                    <!-- Card 5 -->
+                    <div class="group relative overflow-hidden rounded-lg shadow-lg transition-transform duration-300 hover:scale-105">
+                        <img src="https://via.placeholder.com/300x200" alt="Event Decor" class="w-full h-64 object-cover transform transition-transform duration-500 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-black opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
+                        <div class="p-6 absolute bottom-0 left-0 right-0 bg-white bg-opacity-90 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                            <h3 class="text-xl font-bold text-pink-600">Event Decor</h3>
+                            <p class="mt-2 text-gray-600">Customized event decor to match your theme and style.</p>
+                        </div>
+                    </div>
+
+                    <!-- Card 6 -->
+                    <div class="group relative overflow-hidden rounded-lg shadow-lg transition-transform duration-300 hover:scale-105">
+                        <img src="https://via.placeholder.com/300x200" alt="Photography Services" class="w-full h-64 object-cover transform transition-transform duration-500 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-black opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
+                        <div class="p-6 absolute bottom-0 left-0 right-0 bg-white bg-opacity-90 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                            <h3 class="text-xl font-bold text-pink-600">Photography Services</h3>
+                            <p class="mt-2 text-gray-600">Professional photography services to capture your special moments.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>`;
+    break;
+    case 'settings':
+    content.innerHTML = `
+        <section class="py-16 lg:py-20">
+            <h2 class="text-4xl font-bold text-center text-gray-800 mb-8">Settings</h2>
+            <div class="grid grid-cols-1 md:grid-cols-[2fr_3fr] gap-8">
+                <!-- User Profile Card (Left Column) -->
+                <div class="p-6 bg-white rounded-lg shadow-lg transition-transform duration-300 hover:scale-105">
+                    <div class="flex items-center justify-center w-full h-32 sm:h-40 mb-6">
+                        <img src="https://source.unsplash.com/100x100/?portrait?1" alt="User Avatar" class="object-cover object-center w-24 h-24 sm:w-32 sm:h-32 rounded-full border-4 border-pink-600">
+                    </div>
+                    <div class="space-y-4 text-center">
+                        <h2 class="text-2xl font-semibold text-gray-800">CH.SAI KRISHNA</h2>
+                        <span class="text-sm text-gray-600">General Manager</span>
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-center space-x-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-label="Email address" class="w-4 h-4 text-pink-600">
+                                    <path fill="currentColor" d="M274.6,25.623a32.006,32.006,0,0,0-37.2,0L16,183.766V496H496V183.766ZM464,402.693,339.97,322.96,464,226.492ZM256,51.662,454.429,193.4,311.434,304.615,256,268.979l-55.434,35.636L57.571,193.4ZM48,226.492,172.03,322.96,48,402.693ZM464,464H48V440.735L256,307.021,464,440.735Z"></path>
+                                </svg>
+                                <span class="text-gray-600">CH24@company.com</span>
+                            </div>
+                            <div class="flex items-center justify-center space-x-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-label="Phone number" class="w-4 h-4 text-pink-600">
+                                    <path fill="currentColor" d="M449.366,89.648l-.685-.428L362.088,46.559,268.625,171.176l43,57.337a88.529,88.529,0,0,1-83.115,83.114l-57.336-43L46.558,362.088l42.306,85.869.356.725.429.684a25.085,25.085,0,0,0,21.393,11.857h22.344A327.836,327.836,0,0,0,461.222,133.386V111.041A25.084,25.084,0,0,0,449.366,89.648Zm-20.144,43.738c0,163.125-132.712,295.837-295.836,295.837h-18.08L87,371.76l84.18-63.135,46.867,35.149h5.333a120.535,120.535,0,0,0,120.4-120.4v-5.333l-35.149-46.866L371.759,87l57.463,28.311Z"></path>
+                                </svg>
+                                <span class="text-gray-600">+25 381 77 983</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Settings Options (Right Column) -->
+                <div class="grid grid-cols-1 gap-6">
+                    <!-- Account Settings -->
+                    <div class="p-6 bg-white rounded-lg shadow-lg transition-transform duration-300 hover:scale-105 cursor-pointer" onclick="loadPage('accountSettings')">
+                        <h3 class="text-xl font-bold text-pink-600">Account Settings</h3>
+                        <p class="mt-2 text-gray-600">Update your account information, password, and preferences.</p>
+                    </div>
+                    <!-- Privacy -->
+                    <div class="p-6 bg-white rounded-lg shadow-lg transition-transform duration-300 hover:scale-105 cursor-pointer" onclick="loadPage('privacySettings')">
+                        <h3 class="text-xl font-bold text-pink-600">Privacy</h3>
+                        <p class="mt-2 text-gray-600">Control your privacy settings and data sharing.</p>
+                    </div>
+                    <!-- Help & Support -->
+                    <div class="p-6 bg-white rounded-lg shadow-lg transition-transform duration-300 hover:scale-105 cursor-pointer" onclick="loadPage('helpSupport')">
+                        <h3 class="text-xl font-bold text-pink-600">Help & Support</h3>
+                        <p class="mt-2 text-gray-600">Get help and support for any issues you encounter.</p>
+                    </div>
+                </div>
+            </div>
+        </section>`;
+    break;
+
+case 'accountSettings':
+    content.innerHTML = `
+        <section class="py-16 lg:py-20">
+            <h2 class="text-4xl font-bold text-center text-gray-800 mb-8">Account Settings</h2>
+            <div class="max-w-md mx-auto mt-6 bg-white p-6 rounded-lg shadow-lg">
+                <form onsubmit="handleAccountUpdate(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-gray-700 font-bold mb-2">Full Name</label>
+                        <input type="text" id="accountName" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-pink-600" placeholder="Enter your full name" value="Leroy Jenkins">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-bold mb-2">Email Address</label>
+                        <input type="email" id="accountEmail" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-pink-600" placeholder="Enter your email" value="leroy.jenkins@company.com">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-bold mb-2">Phone Number</label>
+                        <input type="tel" id="accountPhone" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-pink-600" placeholder="Enter your phone number" value="+25 381 77 983">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-bold mb-2">Change Password</label>
+                        <input type="password" id="accountPassword" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-pink-600" placeholder="Enter new password">
+                    </div>
+                    <button type="submit" class="bg-pink-600 text-white px-6 py-3 rounded-lg hover:bg-pink-700 w-full transition-colors duration-300">Save Changes</button>
+                </form>
+                <div class="mt-6">
+                    <h3 class="text-lg font-bold text-gray-800">Additional Options</h3>
+                    <ul class="list-disc ml-5 mt-2 text-gray-600 space-y-1">
+                        <li>Reset Password</li>
+                        <li>Delete Account</li>
+                        <li>Manage Connected Apps</li>
+                    </ul>
+                </div>
+            </div>
+        </section>`;
+    break;
+
+case 'privacySettings':
+    content.innerHTML = `
+        <section class="py-16 lg:py-20">
+            <h2 class="text-4xl font-bold text-center text-gray-800 mb-8">Privacy Settings</h2>
+            <div class="max-w-2xl mx-auto mt-6 bg-white p-6 rounded-lg shadow-lg">
+                <h3 class="text-2xl font-bold text-pink-600 mb-4">Data Sharing</h3>
+                <p class="mt-2 text-gray-600 mb-4">
+                    Control how your data is shared with third-party services and advertisers.
+                </p>
+                <div class="space-y-4">
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" class="form-checkbox text-pink-600 border-gray-300 rounded focus:ring-pink-600" checked>
+                        <span class="ml-2 text-gray-700">Allow sharing of non-sensitive data with partners.</span>
+                    </label>
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" class="form-checkbox text-pink-600 border-gray-300 rounded focus:ring-pink-600">
+                        <span class="ml-2 text-gray-700">Allow personalized ads based on your activity.</span>
+                    </label>
+                </div>
+                <h3 class="text-2xl font-bold text-pink-600 mt-6 mb-4">Account Security</h3>
+                <p class="mt-2 text-gray-600 mb-4">
+                    Enable two-factor authentication (2FA) to secure your account.
+                </p>
+                <div class="space-y-4">
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" class="form-checkbox text-pink-600 border-gray-300 rounded focus:ring-pink-600">
+                        <span class="ml-2 text-gray-700">Enable Two-Factor Authentication</span>
+                    </label>
+                </div>
+                <div class="mt-6">
+                    <button class="bg-pink-600 text-white px-6 py-3 rounded-lg hover:bg-pink-700 transition-colors duration-300">Save Privacy Settings</button>
+                </div>
+            </div>
+        </section>`;
+    break;
+
+case 'helpSupport':
+    content.innerHTML = `
+        <section class="py-16 lg:py-20">
+            <h2 class="text-4xl font-bold text-center text-gray-800 mb-8">Help & Support</h2>
+            <div class="max-w-2xl mx-auto mt-6 bg-white p-6 rounded-lg shadow-lg">
+                <h3 class="text-2xl font-bold text-pink-600 mb-4">Frequently Asked Questions (FAQs)</h3>
+                <ul class="list-disc ml-5 mt-2 text-gray-600 space-y-1">
+                    <li>How do I update my account information?</li>
+                    <li>What should I do if I forget my password?</li>
+                    <li>How can I delete my account?</li>
+                    <li>How do I manage my privacy settings?</li>
+                </ul>
+                <h3 class="text-2xl font-bold text-pink-600 mt-6 mb-4">Contact Support</h3>
+                <p class="mt-2 text-gray-600 mb-4">
+                    If you have any questions or issues, feel free to reach out to our support team.
+                </p>
+                <div class="space-y-4">
+                    <p class="flex items-center">
+                        <i class="fas fa-envelope mr-2 text-pink-600"></i>
+                        <span class="text-gray-700">support@gathergo.com</span>
+                    </p>
+                    <p class="flex items-center">
+                        <i class="fas fa-phone mr-2 text-pink-600"></i>
+                        <span class="text-gray-700">+1 234 567 890</span>
+                    </p>
+                </div>
+                <div class="mt-6">
+                    <button class="bg-pink-600 text-white px-6 py-3 rounded-lg hover:bg-pink-700 transition-colors duration-300">Submit a Support Request</button>
+                </div>
+            </div>
+        </section>`;
+    break;
+                case 'searchResults':
+                    const searchTerm = document.getElementById('searchInput').value;
+                    content.innerHTML = `
+                        <section class="py-20">
+                            <h2 class="text-4xl font-bold text-center text-gray-800">Search Results for "${searchTerm}"</h2>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                                <div class="p-6 bg-white rounded-lg shadow-md">
+                                    <h3 class="text-xl font-bold text-pink-600">Wedding Planning</h3>
+                                    <p class="mt-2 text-gray-600">Find the best wedding planning services tailored to your needs.</p>
+                                </div>
+                                <div class="p-6 bg-white rounded-lg shadow-md">
+                                    <h3 class="text-xl font-bold text-pink-600">Corporate Events</h3>
+                                    <p class="mt-2 text-gray-600">Professional event management for corporate gatherings.</p>
+                                </div>
+                                <div class="p-6 bg-white rounded-lg shadow-md">
+                                    <h3 class="text-xl font-bold text-pink-600">Birthday Celebrations</h3>
+                                    <p class="mt-2 text-gray-600">Make your birthday celebrations unforgettable with our services.</p>
+                                </div>
+                                <div class="p-6 bg-white rounded-lg shadow-md">
+                                    <h3 class="text-xl font-bold text-pink-600">Catering Services</h3>
+                                    <p class="mt-2 text-gray-600">Delicious and varied catering options to suit your event needs.</p>
+                                </div>
+                            </div>
+                        </section>`;
+                    break;
+                default:
+                    content.innerHTML = `
+                        <section class="py-20 text-center">
+                            <h2 class="text-4xl font-bold text-gray-800">Page Not Found</h2>
+                            <p class="mt-4 text-gray-600">The page you're looking for doesn't exist.</p>
+                            <button class="mt-6 bg-pink-600 text-white px-6 py-2 rounded-lg hover:bg-pink-700" onclick="loadPage('home')">Back to Home</button>
+                        </section>`;
+            }
+
+            // Scroll to top when loading a new page
+            window.scrollTo(0, 0);
+        }
+
+        // Function to go back to the previous page
+        function goBack() {
+            // Remove the current page from the history stack
+            historyStack.pop();
+            // Load the previous page
+            loadPage(historyStack[historyStack.length - 1]);
+        }
+
+        function toggleSearchBox() {
+            const searchBox = document.getElementById('searchBox');
+            searchBox.classList.toggle('hidden');
+        }
+
+        // Function to handle search
+        function handleSearch() {
+            const searchTerm = document.getElementById('searchInput').value;
+            if (searchTerm.trim() !== '') {
+                loadPage('searchResults');
+            } else {
+                alert('Please enter a search term.');
+            }
+        }
+        function openDialog(contentId) {
+        const overlay = document.getElementById('overlay');
+        const dialog = document.getElementById('dialog');
+        const dialogContent = document.getElementById('dialog-content');
+        const content = document.getElementById(`${contentId}-content`);
+        dialogContent.innerHTML = content.innerHTML;
+        dialog.classList.remove('hidden');
+        overlay.classList.remove('hidden');
+    }
+
+    function closeDialog() {
+        const overlay = document.getElementById('overlay');
+        const dialog = document.getElementById('dialog');
+        dialog.classList.add('hidden');
+        overlay.classList.add('hidden');
+    }
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('#testimonial-track > div');
+    const totalSlides = slides.length;
+
+    function updateSlider() {
+        document.getElementById('testimonial-track').style.transform = `translateX(-${currentSlide * 100}%)`;
+    }
+
+    function nextTestimonial() {
+        currentSlide = (currentSlide + 1) % totalSlides;
+        updateSlider();
+    }
+
+    function prevTestimonial() {
+        currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+        updateSlider();
+    }
+        // Initialize the first testimonial as active
+        window.onload = () => {
+            showTestimonial(1);
+        };
+
+        // Function to generate a list of hotels based on the provided array
+        function generateHotelsList(title, hotels) {
+            let hotelsHTML = `
+                <section class="py-20">
+                    <h2 class="text-4xl font-bold text-center text-gray-800">${title}</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">`;
+            
+            hotels.forEach(hotel => {
+                hotelsHTML += `
+                    <div class="p-6 bg-white rounded-lg shadow-md" onclick="loadPage('hotelDetails', '${hotel.name}')">
+                        <h3 class="text-xl font-bold text-pink-600">${hotel.name}</h3>
+                        <p class="mt-2 text-gray-600">Location: ${hotel.location}</p>
+                        <p class="mt-2 text-gray-600">Price: ${hotel.price}</p>
+                        <p class="mt-2 text-gray-600">Capacity: ${hotel.capacity}</p>
+                        <button class="mt-4 bg-pink-600 text-white px-4 py-2 rounded hover:bg-pink-700">View Details</button>
+                    </div>`;
+            });
+            
+            hotelsHTML += `
+                    </div>
+                </section>`;
+            
+            return hotelsHTML;
+        }
+
+        // Function to get hotel description
+        function getHotelDescription(hotelName) {
+            const descriptions = {
+                'Royal Palace Hotel': 'A luxurious wedding venue with elegant interiors and spacious halls. Perfect for grand weddings and celebrations with ample parking and accommodation facilities.',
+                'Green Valley Resort': 'Nestled amidst lush greenery, this resort offers a serene backdrop for your special day. Features open-air venues and modern amenities.',
+                'Lakeside Manor': 'An exquisite venue overlooking a picturesque lake. Ideal for romantic weddings with stunning sunset views and customizable space.',
+                'Heritage Grand': 'A historical property with royal charm. Its traditional architecture and modern facilities make it perfect for classic weddings.',
+                'Sky Lounge': 'A modern rooftop venue offering panoramic city views. Perfect for cocktail parties and evening gatherings.',
+                'Urban Club': 'A trendy, contemporary space in the heart of the city. Features state-of-the-art sound systems and lighting.',
+                'Terrace Garden': 'An open-air venue adorned with beautiful plants and flowers. Great for daytime events and parties.',
+                'Blue Waters Resort': 'A beachfront property offering a tropical paradise for your celebration. Features private beach access and water activities.',
+                'Business Center': 'A professional venue with all the necessary amenities for corporate events. Equipped with modern technology and conference facilities.',
+                'Conference Plaza': 'A spacious venue designed for large corporate gatherings. Features multiple halls and breakout rooms.',
+                'Tech Park Convention': 'A modern facility with cutting-edge technology. Perfect for tech conferences and product launches.',
+                'Executive Suites': 'An upscale venue offering private meeting rooms and executive amenities. Ideal for exclusive corporate events.',
+                'Celebration Corner': 'A vibrant venue designed for birthday parties and celebrations. Features colorful décor and entertainment options.',
+                'Fun Zone': 'An interactive venue with various entertainment options. Perfect for children\'s parties and casual celebrations.',
+                'Party Paradise': 'A versatile space that can be transformed according to your party theme. Offers customizable packages.',
+                'Carnival Hall': 'A festive venue with a playful atmosphere. Features indoor and outdoor spaces for diverse activities.'
+            };
+            return descriptions[hotelName] || 'A beautiful venue for your special occasion. Contact us for more details.';
+        }
+
+        // Function to get hotel location
+        function getHotelLocation(hotelName) {
+            const locations = {
+                'Royal Palace Hotel': 'Mumbai, Maharashtra',
+                'Green Valley Resort': 'Delhi NCR',
+                'Lakeside Manor': 'Bangalore, Karnataka',
+                'Heritage Grand': 'Jaipur, Rajasthan',
+                'Sky Lounge': 'Mumbai, Maharashtra',
+                'Urban Club': 'Delhi NCR',
+                'Terrace Garden': 'Bangalore, Karnataka',
+                'Blue Waters Resort': 'Goa',
+                'Business Center': 'Mumbai, Maharashtra',
+                'Conference Plaza': 'Delhi NCR',
+                'Tech Park Convention': 'Bangalore, Karnataka',
+                'Executive Suites': 'Hyderabad, Telangana',
+                'Celebration Corner': 'Mumbai, Maharashtra',
+                'Fun Zone': 'Delhi NCR',
+                'Party Paradise': 'Bangalore, Karnataka',
+                'Carnival Hall': 'Chennai, Tamil Nadu'
+            };
+            return locations[hotelName] || 'Contact for location details';
+        }
+
+        // Function to get hotel capacity
+        function getHotelCapacity(hotelName) {
+            const capacities = {
+                'Royal Palace Hotel': '500-1000 guests',
+                'Green Valley Resort': '300-700 guests',
+                'Lakeside Manor': '400-800 guests',
+                'Heritage Grand': '200-600 guests',
+                'Sky Lounge': '100-300 guests',
+                'Urban Club': '80-250 guests',
+                'Terrace Garden': '150-400 guests',
+                'Blue Waters Resort': '100-350 guests',
+                'Business Center': '50-200 guests',
+                'Conference Plaza': '100-300 guests',
+                'Tech Park Convention': '150-400 guests',
+                'Executive Suites': '80-250 guests',
+                'Celebration Corner': '50-150 guests',
+                'Fun Zone': '30-100 guests',
+                'Party Paradise': '40-120 guests',
+                'Carnival Hall': '50-130 guests'
+            };
+            return capacities[hotelName] || 'Contact for capacity details';
+        }
+
+        // Function to get hotel price
+        function getHotelPrice(hotelName) {
+            const prices = {
+                'Royal Palace Hotel': '₹1,50,000 onwards',
+                'Green Valley Resort': '₹1,20,000 onwards',
+                'Lakeside Manor': '₹1,80,000 onwards',
+                'Heritage Grand': '₹1,40,000 onwards',
+                'Sky Lounge': '₹80,000 onwards',
+                'Urban Club': '₹70,000 onwards',
+                'Terrace Garden': '₹90,000 onwards',
+                'Blue Waters Resort': '₹1,00,000 onwards',
+                'Business Center': '₹60,000 onwards',
+                'Conference Plaza': '₹70,000 onwards',
+                'Tech Park Convention': '₹80,000 onwards',
+                'Executive Suites': '₹65,000 onwards',
+                'Celebration Corner': '₹40,000 onwards',
+                'Fun Zone': '₹35,000 onwards',
+                'Party Paradise': '₹45,000 onwards',
+                'Carnival Hall': '₹38,000 onwards'
+            };
+            return prices[hotelName] || 'Contact for pricing details';
+        }
+
+        // Function to get hotel amenities
+        function getHotelAmenities(hotelName) {
+            const amenitiesMap = {
+                'Royal Palace Hotel': [
+                    'Spacious banquet halls',
+                    'Luxurious guest accommodations',
+                    'Valet parking',
+                    'In-house catering',
+                    'Bridal suite',
+                    'Advanced sound system'
+                ],
+                'Green Valley Resort': [
+                    'Outdoor ceremony space',
+                    'Indoor reception area',
+                    'Swimming pool',
+                    'Spa facilities',
+                    'Multiple dining options',
+                    'Recreational activities'
+                ],
+                'Lakeside Manor': [
+                    'Lake view ceremony space',
+                    'Outdoor reception area',
+                    'Botanical gardens',
+                    'Luxury accommodations',
+                    'Customizable lighting',
+                    'Boat rides'
+                ],
+                'Heritage Grand': [
+                    'Heritage architecture',
+                    'Royal decor',
+                    'Multiple event spaces',
+                    'Traditional catering options',
+                    'Cultural performances',
+                    'Vintage car service'
+                ],
+                'Sky Lounge': [
+                    'Panoramic city views',
+                    'State-of-the-art sound system',
+                    'Customizable lighting',
+                    'Indoor and outdoor spaces',
+                    'Bar services',
+                    'Lounge seating'
+                ],
+                'Urban Club': [
+                    'Central location',
+                    'Modern decor',
+                    'DJ booth',
+                    'Dance floor',
+                    'VIP section',
+                    'Premium bar'
+                ],
+                'Terrace Garden': [
+                    'Lush greenery',
+                    'Natural lighting',
+                    'Outdoor bar',
+                    'Customizable spaces',
+                    'Pergola',
+                    'Weather backup options'
+                ],
+                'Blue Waters Resort': [
+                    'Private beach access',
+                    'Water activities',
+                    'Beach ceremony setup',
+                    'Beachfront dining',
+                    'Tropical decor',
+                    'Accommodation for guests'
+                ],
+                'Business Center': [
+                    'High-speed internet',
+                    'Video conferencing facilities',
+                    'Presentation equipment',
+                    'Breakout rooms',
+                    'Business services',
+                    'Catering options'
+                ],
+                'Conference Plaza': [
+                    'Multiple halls',
+                    'Advanced AV equipment',
+                    'Seating flexibility',
+                    'Translation services',
+                    'Registration area',
+                    'Networking spaces'
+                ],
+                'Tech Park Convention': [
+                    'Cutting-edge technology',
+                    'Exhibition space',
+                    'Product launch facilities',
+                    'Tech support',
+                    'Digital signage',
+                    'Broadcast capabilities'
+                ],
+                'Executive Suites': [
+                    'Private meeting rooms',
+                    'Executive amenities',
+                    'Gourmet catering',
+                    'Concierge services',
+                    'Secure access',
+                    'Valet parking'
+                ],
+                'Celebration Corner': [
+                    'Party decorations',
+                    'Entertainment options',
+                    'Themed party packages',
+                    'Cake services',
+                    'Photo booth',
+                    'Games and activities'
+                ],
+                'Fun Zone': [
+                    'Play area',
+                    'Game stations',
+                    'Entertainment staff',
+                    'Kid-friendly catering',
+                    'Activity corners',
+                    'Party favors'
+                ],
+                'Party Paradise': [
+                    'Customizable themes',
+                    'DJ and music system',
+                    'Lighting effects',
+                    'Catering options',
+                    'Decoration services',
+                    'Party planning assistance'
+                ],
+                'Carnival Hall': [
+                    'Indoor and outdoor spaces',
+                    'Carnival games',
+                    'Entertainment options',
+                    'Themed decor',
+                    'Catering packages',
+                    'Activity stations'
+                ]
+            };
+            return amenitiesMap[hotelName] || ['Contact for amenities details'];
+        }
+
+        // Function to handle booking form submission
+        function handleBooking(event, hotelName) {
+            event.preventDefault();
+            
+            // Get form values
+            const name = document.getElementById('bookingName').value;
+            const email = document.getElementById('bookingEmail').value;
+            const phone = document.getElementById('bookingPhone').value;
+            const eventType = document.getElementById('eventType').value;
+            const eventDate = document.getElementById('eventDate').value;
+            const guestCount = document.getElementById('guestCount').value;
+            
+            // Get selected additional services
+            const additionalServices = [];
+            const checkboxes = document.querySelectorAll('input[name="additionalServices"]:checked');
+            checkboxes.forEach(checkbox => {
+                additionalServices.push(checkbox.value);
+            });
+            
+            const notes = document.getElementById('additionalNotes').value;
+            
+            // In a real application, you would send this data to a server
+            // For this example, just show a confirmation message
+            alert(`Thank you for your booking request at ${hotelName}!\n\nWe have received your details and will contact you at ${email} to confirm your booking for ${eventType} on ${eventDate} with ${guestCount} guests.\n\nSelected additional services: ${additionalServices.join(', ') || 'None'}`);
+            
+            // Redirect to home page or confirmation page
+            loadPage('home');
+        }
+
+        // Function to handle contact form submission
+        function handleContact(event) {
+            event.preventDefault();
+            
+            // Get form values
+            const name = document.getElementById('fullName').value;
+            const phone = document.getElementById('phoneNumber').value;
+            const email = document.getElementById('emailAddress').value;
+            const message = document.getElementById('message').value;
+            
+            // In a real application, you would send this data to a server
+            // For this example, just show a confirmation message
+            alert(`Thank you for your message, ${name}!\n\nWe have received your inquiry and will get back to you at ${email} as soon as possible.`);
+            
+            // Clear the form
+            document.getElementById('contactForm').reset();
+        }
+
+        // Function to handle login form submission
+        function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            alert(`Login attempted with email: ${email}`);
+            // Add logic to handle login (e.g., API call)
+            loadPage('home'); // Redirect to home page after login
+        }
+
+        // Function to handle signup form submission
+        function handleSignUp(event) {
+            event.preventDefault();
+            const fullName = document.getElementById('fullName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const phoneNumber = document.getElementById('phoneNumber').value;
+            alert(`Signup attempted for: ${fullName}, ${email}`);
+            // Add logic to handle signup (e.g., API call)
+            loadPage('login'); // Redirect to login page after signup
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load the login page on initial load
+            loadPage('login');
+        });
+    </script>
+
+    <!-- Footer -->
+    <footer class="bg-black text-white py-10 mt-10">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+                <!-- Company Overview -->
+                <div>
+                    <h3 class="text-lg font-bold">Company Overview</h3>
+                    <p class="text-gray-400 mt-2">
+                        With a commitment to excellence and customer satisfaction, we strive to deliver premium quality
+                        and innovative solutions tailored to meet your needs.
+                    </p>
+                </div>
+
+                <!-- Contact -->
+                <div>
+                    <h3 class="text-lg font-bold">Contact</h3>
+                    <p class="text-gray-400 mt-2 flex items-center justify-center md:justify-start">
+                        <i class="fas fa-map-marker-alt mr-2"></i> 123, Event Plaza, India
+                    </p>
+                    <p class="text-gray-400 mt-2 flex items-center justify-center md:justify-start">
+                        <i class="fas fa-phone mr-2"></i> 999 673 984
+                    </p>
+                    <p class="text-gray-400 mt-2 flex items-center justify-center md:justify-start">
+                        <i class="fas fa-envelope mr-2"></i> support@gathergo.com
+                    </p>
+                </div>
+
+                <!-- Services -->
+                <div>
+                    <h3 class="text-lg font-bold">Services</h3>
+                    <ul class="text-gray-400 mt-2 space-y-1">
+                        <li>Party Planning</li>
+                        <li>Personalized Event Themes</li>
+                        <li>Vendor Coordination</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Copyright and Social Media -->
+            <div class="border-t border-gray-700 mt-6 pt-4 flex flex-col md:flex-row justify-between items-center text-gray-400">
+                <p>Copyright 2024 All Rights Reserved. Made by </p>
+                <div class="flex space-x-4 mt-4 md:mt-0">
+                    <a href="#" class="text-white bg-gray-700 p-2 rounded-full"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-white bg-gray-700 p-2 rounded-full"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-white bg-gray-700 p-2 rounded-full"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>
